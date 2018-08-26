@@ -24,7 +24,6 @@ var options = {
 https.createServer(options, app).listen(443)
 console.log('server on https://localhost');
 // Token
-const token = 'inter_iran_ali_farid_com'
 
 // mongo stuff
 const option = {
