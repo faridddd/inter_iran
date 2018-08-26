@@ -100,8 +100,9 @@ app.use(passport.initialize())
 
 app.use(passport.session())
 
-app.use(favicon(__dirname + '/favicon.ico'));
+app.use(favicon(__dirname + '/favicon.png'));
 
+  
 passport.use(new Lstrategy({
     usernameField: 'email'
 }, (email, password, done) => {
