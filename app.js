@@ -16,6 +16,7 @@ const moment = require('moment')
 const key = fs.readFileSync('keys/key.pem')
 const cert = fs.readFileSync('keys/cert.pem')
 const Handlebars = require('handlebars')
+const favicon = require('express-favicon');
 var options = {
     key: key,
     cert: cert
@@ -27,16 +28,7 @@ console.log('server on https://localhost');
 
 // mongo stuff
 const option = {
-    useNewUrlParser: true,
-    autoIndex: false, // Don't build indexes
-    reconnectTries: Number.MAX_VALUE, // Never stop trying to reconnect
-    reconnectInterval: 500, // Reconnect every 500ms
-    poolSize: 10, // Maintain up to 10 socket connections
-    // If not connected, return errors immediately rather than waiting for reconnect
-    bufferMaxEntries: 0,
-    connectTimeoutMS: 10000, // Give up initial connection after 10 seconds
-    socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
-    family: 4 // Use IPv4, skip trying IPv6
+    useNewUrlParser: true
 };
 uri = 'mongodb://localhost/inter_iran'
 mongoose.connect(uri, option, () => {
@@ -107,6 +99,8 @@ Handlebars.registerHelper('formatDate', function (date, format) {
 app.use(passport.initialize())
 
 app.use(passport.session())
+
+app.use(favicon(__dirname + '/favicon.ico'));
 
 passport.use(new Lstrategy({
     usernameField: 'email'
