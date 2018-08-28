@@ -5,7 +5,6 @@ const mongoose = require('mongoose')
 const bodyParser = require('body-parser');
 const fs = require('fs');
 const app = express();
-// const hbs = require('hbs')
 const expHbs = require('express-handlebars');
 const flash = require('connect-flash')
 const session = require('express-session')
