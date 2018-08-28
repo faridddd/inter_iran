@@ -4,7 +4,8 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1" ,
+    "start": "sudo nodemon app.js"
   },
   "author": "",
   "license": "ISC",
@@ -18,7 +19,6 @@
     "express-handlebars": "^3.0.0",
     "express-session": "^1.15.6",
     "flash": "^1.1.0",
-    "hbs": "^4.0.1",
     "https": "^1.0.0",
     "moment": "^2.22.2",
     "momentjs": "^2.0.0",

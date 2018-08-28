@@ -5,7 +5,7 @@ const mongoose = require('mongoose')
 const bodyParser = require('body-parser');
 const fs = require('fs');
 const app = express();
-const hbs = require('hbs')
+// const hbs = require('hbs')
 const expHbs = require('express-handlebars');
 const flash = require('connect-flash')
 const session = require('express-session')
@@ -102,6 +102,7 @@ app.use(passport.session())
 
 app.use(favicon(__dirname + '/favicon.png'));
 
+
   
 passport.use(new Lstrategy({
     usernameField: 'email'
@@ -161,6 +162,7 @@ app.engine('hbs', expHbs({
     extname: 'hbs'
 }));
 app.use(express.static(__dirname + '/views/public'))
+
 
 // routes
 
@@ -236,8 +238,9 @@ app.get('/addnewpost', (req, res) => {
     res.render('main/addnewpost.hbs')
 })
 app.get('/:id', (req, res) => {
+    var id = req.params.id
     Post.findById({
-            _id: req.params.id
+            _id: id
         })
         .then(data => {
             res.render('main/show.hbs', {
