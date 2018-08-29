@@ -15,6 +15,10 @@ const moment = require('moment')
 const key = fs.readFileSync('keys/key.pem')
 const cert = fs.readFileSync('keys/cert.pem')
 const Handlebars = require('handlebars')
+const multer = require('multer');
+var upload = multer({
+    dest: 'uploads/'
+})
 const favicon = require('express-favicon');
 var options = {
     key: key,
@@ -36,6 +40,8 @@ mongoose.connect(uri, option, () => {
 });
 const Schema = mongoose.Schema;
 const UserSchema = new Schema({
+    _id: mongoose.Schema.Types.ObjectId,
+
     username: {
         type: String,
         required: true
@@ -47,11 +53,17 @@ const UserSchema = new Schema({
     email: {
         type: String,
         required: true
+    },
+    image: {
+        type: String,
+        required: true
     }
 })
-const User = mongoose.model('inter_iran', UserSchema);
+const User = mongoose.model('users', UserSchema);
 
 const PostSchema = new Schema({
+    _id: mongoose.Schema.Types.ObjectId,
+
     title: {
         required: true,
         type: String
@@ -102,15 +114,15 @@ app.use(passport.session())
 app.use(favicon(__dirname + '/favicon.png'));
 
 
-  
+
 passport.use(new Lstrategy({
     usernameField: 'email'
 }, (email, password, done) => {
     User.findOne({
         email: email
     }, (err, data) => {
-        console.log(data);
-        console.log(err);
+        // console.log(data);
+        // console.log(err);
         if (!data) {
             return done(null, false, {
                 message: 'No user found'
@@ -177,7 +189,7 @@ app.get('/', (req, res) => {
 app.get('/signup', (req, res) => {
     res.render('main/signup.hbs')
 })
-app.post('/signup', (req, res) => {
+app.post('/signup', upload.single('avatar'), (req, res) => {
     User.find({
             email: req.body.email
         })
@@ -186,6 +198,7 @@ app.post('/signup', (req, res) => {
                 bcrypt.genSalt(15, (error, salt) => {
                     bcrypt.hash(req.body.password, salt, (err, hash) => {
                         const newUser = new User({
+                            _id: mongoose.Schema.Types.ObjectId,
                             email: req.body.email,
                             password: hash,
                             username: req.body.password
@@ -204,7 +217,7 @@ app.post('/signup', (req, res) => {
 
 })
 app.get('/verify', (req, res) => {
-    console.log(req.user);
+    // console.log(req.user);
     res.redirect('/')
 })
 
@@ -223,6 +236,7 @@ app.get('/login', (req, res) => {
 app.post('/addnewpost', (req, res) => {
     // res.send('ol')
     const newPost = new Post({
+        _id: new mongoose.Types.ObjectId,
         title: req.body.title,
         image: req.body.image,
         matn: req.body.matn
@@ -245,14 +259,14 @@ app.get('/:id', (req, res) => {
             res.render('main/show.hbs', {
                 data: data
             })
-            console.log(data);
+            // console.log(data);
 
         })
 
 })
 
 app.post('/posts/comment/:id', (req, res) => {
-    console.log(req.user.username);
+    // console.log(req.user.username);
     if (req.user) {
 
         Post.findById({
@@ -291,15 +305,14 @@ app.post('/search', (req, res) => {
 app.post('/delete', (req, res) => {
     if (req.body.token == token) {
         Post.findByIdAndRemove({
-            _id: req.body.id
-        })
-            .then(data=>{
-                req.flash('Smsg','Post deleted')
+                _id: req.body.id
+            })
+            .then(data => {
+                req.flash('Smsg', 'Post deleted')
                 res.redirect('/')
             })
-    }
-    else {
-        req.flash('Fmsg','authentication error')
+    } else {
+        req.flash('Fmsg', 'authentication error')
         res.redirect('/')
     }
 })
