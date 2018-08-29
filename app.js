@@ -193,12 +193,12 @@ app.post('/signup', (req, res) => {
                         // console.log(newUser);
                         newUser.save()
                         req.flash('Smsg', 'signup successful')
-                        res.redirect('/')
+                        res.redirect('/login')
                     })
                 })
             } else {
                 req.flash('Fmsg', 'user exits')
-                res.redirect('/')
+                res.redirect('/signup')
             }
         })
 
