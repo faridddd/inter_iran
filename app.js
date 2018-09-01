@@ -38,6 +38,8 @@ mongoose.connect(uri, option, () => {
     console.log('connected to DB');
 
 });
+
+mongoose.Promise = global.Promise;
 const Schema = mongoose.Schema;
 const UserSchema = new Schema({
     _id: mongoose.Schema.Types.ObjectId,
@@ -189,7 +191,7 @@ app.get('/', (req, res) => {
 app.get('/signup', (req, res) => {
     res.render('main/signup.hbs')
 })
-app.post('/signup', upload.single('avatar'), (req, res) => {
+app.post('/signup', (req, res) => {
     User.find({
             email: req.body.email
         })
