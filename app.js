@@ -42,8 +42,6 @@ mongoose.connect(uri, option, () => {
 mongoose.Promise = global.Promise;
 const Schema = mongoose.Schema;
 const UserSchema = new Schema({
-    _id: mongoose.Schema.Types.ObjectId,
-
     username: {
         type: String,
         required: true
@@ -64,8 +62,6 @@ const UserSchema = new Schema({
 const User = mongoose.model('users', UserSchema);
 
 const PostSchema = new Schema({
-    _id: mongoose.Schema.Types.ObjectId,
-
     title: {
         required: true,
         type: String
@@ -114,8 +110,6 @@ app.use(passport.initialize())
 app.use(passport.session())
 
 app.use(favicon(__dirname + '/favicon.png'));
-
-
 
 passport.use(new Lstrategy({
     usernameField: 'email'
@@ -200,7 +194,6 @@ app.post('/signup', (req, res) => {
                 bcrypt.genSalt(15, (error, salt) => {
                     bcrypt.hash(req.body.password, salt, (err, hash) => {
                         const newUser = new User({
-                            _id: mongoose.Schema.Types.ObjectId,
                             email: req.body.email,
                             password: hash,
                             username: req.body.password
@@ -218,10 +211,6 @@ app.post('/signup', (req, res) => {
         })
 
 })
-app.get('/verify', (req, res) => {
-    // console.log(req.user);
-    res.redirect('/')
-})
 
 app.post('/login', (req, res, next) => {
     passport.authenticate('local', {
@@ -238,7 +227,6 @@ app.get('/login', (req, res) => {
 app.post('/addnewpost', (req, res) => {
     // res.send('ol')
     const newPost = new Post({
-        _id: new mongoose.Types.ObjectId,
         title: req.body.title,
         image: req.body.image,
         matn: req.body.matn
@@ -294,7 +282,7 @@ app.post('/posts/comment/:id', (req, res) => {
 })
 
 app.post('/search', (req, res) => {
-    Post.findOne({
+    Post.find({
             title: req.body.title
         })
         .then(data => {
