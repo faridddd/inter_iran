@@ -31,7 +31,7 @@ console.log('server on https://localhost');
 
 // mongo stuff
 const option = {
-    useNewUrlParser: true
+    useNewUrlParser: true,
 };
 uri = 'mongodb://localhost/inter_iran'
 mongoose.connect(uri, option, () => {
@@ -182,31 +182,36 @@ app.get('/signup', (req, res) => {
     res.render('main/signup.hbs')
 })
 app.post('/signup', (req, res) => {
-    User.findOne({email : req.body.email})
-        .then(data=>{
+    User.findOne({
+            email: req.body.email
+        })
+        .then(data => {
             if (data == null) {
-                bcrypt.genSalt(16,(err,salt)=>{
-                    if (err ){throw err;}
-                    bcrypt.hash(req.body.password,salt,(error,hash)=>{
-                        if (error) {throw error}
+                bcrypt.genSalt(16, (err, salt) => {
+                    if (err) {
+                        throw err;
+                    }
+                    bcrypt.hash(req.body.password, salt, (error, hash) => {
+                        if (error) {
+                            throw error
+                        }
                         newUser = new User({
-                            email : req.body.email,
-                            password : hash,
-                            username : req.body.username
+                            email: req.body.email,
+                            password: hash,
+                            username: req.body.username
                         })
                         newUser.save()
-                            .then(user=>{
-                                req.flash('Smsg','Account created successfully')
+                            .then(user => {
+                                req.flash('Smsg', 'Account created successfully')
                                 res.redirect('/login')
                             })
                     })
                 })
-            }
-            else {
-                req.flash('Fmsg','Account exists')
+            } else {
+                req.flash('Fmsg', 'Account exists')
                 res.redirect('/signup')
             }
-        })    
+        })
 })
 
 app.post('/login', (req, res, next) => {
@@ -222,16 +227,22 @@ app.get('/login', (req, res) => {
 })
 
 app.post('/addnewpost', (req, res) => {
-    // res.send('ol')
-    const newPost = new Post({
-        title: req.body.title,
-        image: req.body.image,
-        matn: req.body.matn
-    })
-    newPost.save()
-        .then(data => {
-            res.redirect('/')
+    if (req.user) {
+
+        const newPost = new Post({
+            title: req.body.title,
+            image: req.body.image,
+            matn: req.body.matn
         })
+        newPost.save()
+            .then(data => {
+                res.redirect('/')
+            })
+    }
+    else {
+        req.flash('Fmsg','you\'re not autherizede !')
+        res.redirect('/login')
+    }
 })
 
 app.get('/addnewpost', (req, res) => {
@@ -302,7 +313,7 @@ app.post('/delete', (req, res) => {
     }
 })
 
-app.get('/robots.txt',(req,res)=>{
+app.get('/robots.txt', (req, res) => {
     res.type('text/plain');
     res.send("User-agent: *\nDisallow: /");
 })
