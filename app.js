@@ -186,7 +186,9 @@ app.post('/signup', (req, res) => {
         .then(data=>{
             if (data == null) {
                 bcrypt.genSalt(16,(err,salt)=>{
-                    bcrypt.hash(req.body.password,salt,(err,hash)=>{
+                    if (err ){throw err;}
+                    bcrypt.hash(req.body.password,salt,(error,hash)=>{
+                        if (error) {throw error}
                         newUser = new User({
                             email : req.body.email,
                             password : hash,
@@ -244,8 +246,6 @@ app.get('/:id', (req, res) => {
             res.render('main/show.hbs', {
                 data: data
             })
-            // console.log(data);
-
         })
 
 })
@@ -266,12 +266,12 @@ app.post('/posts/comment/:id', (req, res) => {
 
                 data.save()
                     .then(data => {
-                        res.redirect('/')
+                        res.redirect('/:id')
                     })
             })
     } else {
         req.flash('Fmsg', 'you are not logged in')
-        res.redirect('/')
+        res.redirect('/login')
     }
 
 })
@@ -300,4 +300,9 @@ app.post('/delete', (req, res) => {
         req.flash('Fmsg', 'authentication error')
         res.redirect('/')
     }
+})
+
+app.get('/robots.txt',(req,res)=>{
+    res.type('text/plain');
+    res.send("User-agent: *\nDisallow: /");
 })
