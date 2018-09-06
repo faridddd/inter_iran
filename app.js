@@ -53,10 +53,6 @@ const UserSchema = new Schema({
     email: {
         type: String,
         required: true
-    },
-    image: {
-        type: String,
-        required: true
     }
 })
 const User = mongoose.model('users', UserSchema);
@@ -186,30 +182,29 @@ app.get('/signup', (req, res) => {
     res.render('main/signup.hbs')
 })
 app.post('/signup', (req, res) => {
-    User.find({
-            email: req.body.email
-        })
-        .then(data => {
-            if (data != []) {
-                bcrypt.genSalt(15, (error, salt) => {
-                    bcrypt.hash(req.body.password, salt, (err, hash) => {
-                        const newUser = new User({
-                            email: req.body.email,
-                            password: hash,
-                            username: req.body.password
+    User.findOne({email : req.body.email})
+        .then(data=>{
+            if (data == null) {
+                bcrypt.genSalt(16,(err,salt)=>{
+                    bcrypt.hash(req.body.password,salt,(err,hash)=>{
+                        newUser = new User({
+                            email : req.body.email,
+                            password : hash,
+                            username : req.body.username
                         })
-                        // console.log(newUser);
                         newUser.save()
-                        req.flash('Smsg', 'signup successful')
-                        res.redirect('/login')
+                            .then(user=>{
+                                req.flash('Smsg','Account created successfully')
+                                res.redirect('/login')
+                            })
                     })
                 })
-            } else {
-                req.flash('Fmsg', 'user exits')
+            }
+            else {
+                req.flash('Fmsg','Account exists')
                 res.redirect('/signup')
             }
-        })
-
+        })    
 })
 
 app.post('/login', (req, res, next) => {
