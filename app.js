@@ -19,6 +19,7 @@ const multer = require('multer');
 var upload = multer({
     dest: 'uploads/'
 })
+
 const favicon = require('express-favicon');
 var options = {
     key: key,
@@ -34,10 +35,13 @@ const option = {
     useNewUrlParser: true,
 };
 uri = 'mongodb://localhost/inter_iran'
-mongoose.connect(uri, option, () => {
-    console.log('connected to DB');
-
-});
+mongoose.connect(uri, option);
+mongoose.connection.on("connected",()=>{
+    console.log("connected");
+})
+mongoose.connection.on("error",(err)=>{
+    console.log(err);
+})
 
 mongoose.Promise = global.Promise;
 const Schema = mongoose.Schema;
@@ -181,6 +185,7 @@ app.get('/', (req, res) => {
 app.get('/signup', (req, res) => {
     res.render('main/signup.hbs')
 })
+
 app.post('/signup', (req, res) => {
     User.findOne({
             email: req.body.email
@@ -238,9 +243,8 @@ app.post('/addnewpost', (req, res) => {
             .then(data => {
                 res.redirect('/')
             })
-    }
-    else {
-        req.flash('Fmsg','you\'re not autherizede !')
+    } else {
+        req.flash('Fmsg', 'you\'re not autherizede !')
         res.redirect('/login')
     }
 })
@@ -262,6 +266,7 @@ app.get('/:id', (req, res) => {
 })
 
 app.post('/posts/comment/:id', (req, res) => {
+    let id = req.params.id
     // console.log(req.user.username);
     if (req.user) {
 
@@ -277,7 +282,7 @@ app.post('/posts/comment/:id', (req, res) => {
 
                 data.save()
                     .then(data => {
-                        res.redirect('/:id')
+                        res.redirect('/:'+id)
                     })
             })
     } else {
