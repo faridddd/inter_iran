@@ -1,12 +1,14 @@
 const express = require('express');
 const router = express.Router();
+const Post = require("../models/Post")
+const User = require("../models/User")
 const mongoose = require('mongoose');
-const Post = mongoose.model('posts');
-const User = mongoose.model("users");
+const passport = require("passport")
 
 router.get('/', (req, res) => {
-    Post.find()
+    Post.find().sort([['date', -1]])
         .then(data => {
+            
             res.render('main/index.hbs', {
                 data: data 
             })
@@ -113,7 +115,7 @@ router.post('/posts/comment/:id', (req, res) => {
 
                 data.save()
                     .then(data => {
-                        res.redirect('/:'+id)
+                        res.redirect('/'+id)
                     })
             })
     } else {
