@@ -16,6 +16,8 @@ const key = fs.readFileSync('keys/key.pem')
 const cert = fs.readFileSync('keys/cert.pem')
 const Handlebars = require('handlebars')
 const multer = require('multer');
+const UserSchema = require("./models/User");
+const PostSchema = require("./models/Post");
 var upload = multer({
     dest: 'uploads/'
 })
@@ -44,54 +46,10 @@ mongoose.connection.on("error",(err)=>{
 })
 
 mongoose.Promise = global.Promise;
-const Schema = mongoose.Schema;
-const UserSchema = new Schema({
-    username: {
-        type: String,
-        required: true
-    },
-    password: {
-        required: true,
-        type: String
-    },
-    email: {
-        type: String,
-        required: true
-    }
-})
+
+
 const User = mongoose.model('users', UserSchema);
 
-const PostSchema = new Schema({
-    title: {
-        required: true,
-        type: String
-    },
-    image: {
-        type: String
-    },
-    matn: {
-        required: true,
-        type: String
-    },
-    date: {
-        type: Date,
-        default: Date.now
-    },
-    comments: [{
-        commentBody: {
-            type: String,
-            required: true
-        },
-        commentDate: {
-            type: Date,
-            default: Date.now
-        },
-        commentUser: {
-            type: String
-        }
-
-    }]
-})
 const Post = mongoose.model('posts', PostSchema);
 // middlewares
 
@@ -177,7 +135,7 @@ app.get('/', (req, res) => {
     Post.find()
         .then(data => {
             res.render('main/index.hbs', {
-                data: data
+                data: data 
             })
         })
 })
