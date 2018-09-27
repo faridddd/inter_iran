@@ -16,12 +16,12 @@ const key = fs.readFileSync('keys/key.pem')
 const cert = fs.readFileSync('keys/cert.pem')
 const Handlebars = require('handlebars')
 const multer = require('multer');
-const UserSchema = require("./models/User");
-const PostSchema = require("./models/Post");
 const routes = require("./routes/index");
 var upload = multer({
     dest: 'uploads/'
 })
+const Post = require("./models/Post")
+const User = require("./models/User")
 
 const favicon = require('express-favicon');
 var options = {
