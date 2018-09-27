@@ -17,10 +17,6 @@ const cert = fs.readFileSync('keys/cert.pem')
 const Handlebars = require('handlebars')
 const multer = require('multer');
 const routes = require("./routes/index");
-var upload = multer({
-    dest: 'uploads/'
-})
-const Post = require("./models/Post")
 const User = require("./models/User")
 
 const favicon = require('express-favicon');
